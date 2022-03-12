@@ -4,9 +4,6 @@ env:
   - GO111MODULE=on
   - CGO_ENABLED=0
 
-gomod:
-  proxy: true
-
 builds:
   - id: linux-amd64
     binary: co-author
