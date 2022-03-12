@@ -1,0 +1,14 @@
+#!/bin/sh
+
+COMMIT_MSG_FILE=$1
+COMMIT_SOURCE=$2
+SHA1=$3
+APP=co-author
+
+if [ -z "$(go env GOBIN)" ]; then
+  export GOBIN="$(go env GOPATH)/bin"
+else
+  export GOBIN="$(go env GOBIN)"
+fi
+
+$GOBIN/$APP commit $COMMIT_MSG_FILE
