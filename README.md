@@ -40,16 +40,34 @@ go install github.com/erkanzileli/co-author@latest
 
 ### Add as Git Hook
 
-It works with the `prepare-commit-msg` Git hook.
+It works with the `prepare-commit-msg` Git hook. You can configure it per project or globally.
 
-If you have not a `prepare-commit-msg` defined yet, run command below.
+**Caution:** Before running the commands below, consider checking your hook configurations for saving them instead of
+overwriting.
+
+#### Per project
+
+If you have not a `prepare-commit-msg` defined yet, run the commands below.
 
 ```shell
 co-author hook > .git/hooks/prepare-commit-msg
 chmod +x .git/hooks/prepare-commit-msg
 ```
 
-If you already have a `prepare-commit-msg` hook defined, then take necessary output from the command below.
+#### Global
+
+If you want to use this globally, then run the commands below.
+
+```shell
+cd ~
+mkdir -pv .git/hooks
+git config --global --add core.hooksPath ~/.git/hooks
+co-author hook > .git/hooks/prepare-commit-msg
+chmod +x .git/hooks/prepare-commit-msg
+```
+
+If you already have a `prepare-commit-msg` hook defined, then take necessary output from the command below. The rest is
+up to you.
 
 ```shell
 co-author hook
