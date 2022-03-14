@@ -1,6 +1,6 @@
 # co-author
 
-A TUI that saves time from writing Co-authored-by lines to the commits in a fancy way.
+A TUI that saves time from writing Co-authored-by lines to the commits in a fancy way. Works as Git hook.
 
 ## Motivation
 
@@ -27,6 +27,7 @@ Thanks to [charmbracelet](https://github.com/charmbracelet) community for provid
 - [X] Filter
 - [X] Selectable
 - [X] Reset selections
+- [X] Git hook template
 
 ## Usage
 
@@ -37,6 +38,19 @@ Go to the [releases](https://github.com/erkanzileli/co-author/releases) or just 
 ```shell
 go install github.com/erkanzileli/co-author@latest
 ```
+
+Check it is accessible from your terminal
+
+```shell
+co-author
+```
+
+If it's not, then check your PATH variable because it should include the binaries installed with Go.
+
+It might be on some places like the following
+
+- `~/go/bin`
+- `ls $(go env GOPATH)/bin`
 
 ### Add as Git Hook
 
