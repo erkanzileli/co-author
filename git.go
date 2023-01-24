@@ -2,11 +2,12 @@ package main
 
 import (
 	"fmt"
-	"github.com/charmbracelet/bubbles/list"
-	"github.com/pkg/errors"
 	"os"
 	"os/exec"
 	"strings"
+
+	"github.com/charmbracelet/bubbles/list"
+	"github.com/pkg/errors"
 )
 
 var (
@@ -14,6 +15,18 @@ var (
 )
 
 func findCommitters() ([]list.Item, error) {
+	if fileExists(CONFIG_FILES) {
+
+		cfg, err := configload(CONFIG_FILES)
+		if err != nil {
+			return nil, errors.Wrap(err, fmt.Sprintf("config load failed %s", CONFIG_FILES))
+		}
+		committers := make([]list.Item, len(cfg.Committers))
+		for i := 0; i < len(cfg.Committers); i++ {
+			committers[i] = &cfg.Committers[i]
+		}
+		return committers, nil
+	}
 	gitCmd := exec.Command("git", "shortlog", "-sen", "--group=author", "--group=trailer:Co-authored-by", "--all", "--no-merges")
 	cutCmd := exec.Command("cut", "-c8-")
 
@@ -45,8 +58,8 @@ func parseCommitters(raw []byte) []list.Item {
 			continue
 		}
 		committers = append(committers, &committer{
-			name:  rawCommitter[:angleIndex-1],
-			email: rawCommitter[angleIndex+1 : len(rawCommitter)-1],
+			Name:  rawCommitter[:angleIndex-1],
+			Email: rawCommitter[angleIndex+1 : len(rawCommitter)-1],
 		})
 	}
 	return committers
@@ -54,7 +67,7 @@ func parseCommitters(raw []byte) []list.Item {
 
 func prepareCommitMsg(committers []*committer) (msg string) {
 	for _, c := range committers {
-		msg += fmt.Sprintf("Co-authored-by: %s <%s>\n", c.name, c.email)
+		msg += fmt.Sprintf("Co-authored-by: %s <%s>\n", c.Name, c.Email)
 	}
 	return
 }
