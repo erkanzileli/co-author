@@ -87,6 +87,18 @@ up to you.
 co-author hook
 ```
 
+## Load Config
+Make it refer to the config.When there is a config, only refer to the config.
+This makes it possible to target only those who participate in mob programming.
+
+this file name only `.git-co-authors.yaml`
+```yaml
+committers:
+  - name: user
+    email: user@example.com
+...
+```
+
 ## Contributing
 
 Feel free to add anything useful or fix something.

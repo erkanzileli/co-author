@@ -2,13 +2,14 @@ package main
 
 import (
 	"fmt"
+	"log"
+	"os"
+
 	"github.com/charmbracelet/bubbles/key"
 	"github.com/charmbracelet/bubbles/list"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 	"github.com/spf13/cobra"
-	"log"
-	"os"
 )
 
 var (
@@ -85,7 +86,6 @@ func newModel() *model {
 			listKeys.toggleHelpMenu,
 		}
 	}
-
 	return &model{
 		list:         committerList,
 		keys:         listKeys,

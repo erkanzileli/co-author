@@ -2,28 +2,29 @@ package main
 
 import (
 	"fmt"
+
 	"github.com/charmbracelet/bubbles/list"
 )
 
 type committer struct {
-	name     string
-	email    string
+	Name     string `yaml:"name,omitempty"`
+	Email    string `yaml:"email,omitempty"`
 	selected bool
 }
 
 func (c *committer) Title() string {
 	if c.selected {
-		return fmt.Sprintf("[X] %s", c.name)
+		return fmt.Sprintf("[X] %s", c.Name)
 	}
-	return fmt.Sprintf("[ ] %s", c.name)
+	return fmt.Sprintf("[ ] %s", c.Name)
 }
 
 func (c *committer) Description() string {
-	return c.email
+	return c.Email
 }
 
 func (c *committer) FilterValue() string {
-	return c.name
+	return c.Name
 }
 
 func (c *committer) ToggleSelect() {

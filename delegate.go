@@ -2,10 +2,11 @@ package main
 
 import (
 	"fmt"
+	"log"
+
 	"github.com/charmbracelet/bubbles/key"
 	"github.com/charmbracelet/bubbles/list"
 	tea "github.com/charmbracelet/bubbletea"
-	"log"
 )
 
 const (
@@ -30,9 +31,9 @@ func newItemDelegate(keys *delegateKeyMap) list.DefaultDelegate {
 
 				var message string
 				if item.selected {
-					message = fmt.Sprintf(itemSelectMessageFormat, item.name)
+					message = fmt.Sprintf(itemSelectMessageFormat, item.Name)
 				} else {
-					message = fmt.Sprintf(itemUnSelectMessageFormat, item.name)
+					message = fmt.Sprintf(itemUnSelectMessageFormat, item.Name)
 				}
 
 				return m.NewStatusMessage(statusMessageStyle(message))
