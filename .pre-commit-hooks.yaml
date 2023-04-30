@@ -1,6 +1,6 @@
 - id: co-author
   name: co-author
-  entry: pre-commit/prepare-commit-msg.sh
+  entry: .pre-commit/prepare-commit-msg.sh
   stages:
     - prepare-commit-msg
   language: script

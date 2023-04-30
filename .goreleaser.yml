@@ -37,15 +37,6 @@ builds:
       - -s -w -X main.version={{ .Version }}
       - -buildmode=exe
 
-archives:
-  - replacements:
-      darwin: Darwin
-      linux: Linux
-      windows: Windows
-      386: i386
-      amd64: x86_64
-    name_template: '{{.ProjectName}}_{{.Version}}_{{.Os}}-{{.Arch}}'
-
 checksum:
   name_template: "{{ .ProjectName }}_checksums.txt"
 
