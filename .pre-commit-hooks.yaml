@@ -1,0 +1,7 @@
+- id: co-author
+  name: co-author
+  entry: pre-commit/prepare-commit-msg.sh
+  stages:
+    - prepare-commit-msg
+  language: script
+  description: Runs `co-author commit` to help fulfill co-authors of the commit, requires co-author

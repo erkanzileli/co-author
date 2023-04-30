@@ -1,6 +1,6 @@
 # co-author
 
-A TUI that saves time from writing Co-authored-by lines to the commits in a fancy way. Works as Git hook.
+A TUI that saves time from writing Co-authored-by lines to the commits in a fancy way. It works as a Git hook.
 
 ## Motivation
 
@@ -31,73 +31,106 @@ Thanks to [charmbracelet](https://github.com/charmbracelet) community for provid
 
 ## Usage
 
-### Install
+It works with the `prepare-commit-msg` Git hook. You can configure it per project or globally.
+
+**Caution:** Before running the commands below, consider checking your hook configurations for saving them instead of
+overwriting.
+
+### Installation
 
 Go to the [releases](https://github.com/erkanzileli/co-author/releases) or just install the latest version.
 
 ```shell
-go install github.com/erkanzileli/co-author@latest
+go install github.com/erkanzileli/co-author@latest # Install to your GOBIN directory
 ```
 
 Check it is accessible from your terminal
 
 ```shell
-co-author
+co-author version
 ```
 
-If it's not, then check your PATH variable because it should include the binaries installed with Go.
+If it's not, then check your **PATH** variable because it should include the binaries installed with Go.
 
 It might be on some places like the following
 
 - `~/go/bin`
 - `ls $(go env GOPATH)/bin`
 
-### Add as Git Hook
+### Per project
 
-It works with the `prepare-commit-msg` Git hook. You can configure it per project or globally.
-
-**Caution:** Before running the commands below, consider checking your hook configurations for saving them instead of
-overwriting.
-
-#### Per project
-
-If you have not a `prepare-commit-msg` defined yet, run the commands below.
+You can enable it for a specific project. Open a terminal in your project directory and run the commands below.
 
 ```shell
-co-author hook > .git/hooks/prepare-commit-msg
-chmod +x .git/hooks/prepare-commit-msg
+co-author hook >.git/hooks/prepare-commit-msg # Create the hook
+chmod +x .git/hooks/prepare-commit-msg        # Make it executable
 ```
 
-#### Global
+### Global
 
-If you want to use this globally, then run the commands below.
+You can also enable it globally. In this way, you don't have to enable it every project you have. Run the commands
+below.
 
 ```shell
-cd ~
-mkdir -pv .git/hooks
-git config --global --add core.hooksPath ~/.git/hooks
-co-author hook > .git/hooks/prepare-commit-msg
-chmod +x .git/hooks/prepare-commit-msg
+cd ~ # Go to your home directory
+mkdir -pv .git/hooks # Create a global Git hooks directory if it doesn't exist
+git config --global --add core.hooksPath ~/.git/hooks # Set the global Git hooks directory
+co-author hook > .git/hooks/prepare-commit-msg # Create the hook
+chmod +x .git/hooks/prepare-commit-msg # Make it executable
 ```
+
+### Migrate with the existing hook
 
 If you already have a `prepare-commit-msg` hook defined, then take necessary output from the command below. The rest is
 up to you.
 
 ```shell
-co-author hook
+co-author hook # This will print the hook template
 ```
 
-## Load Config
-Make it refer to the config.When there is a config, only refer to the config.
-This makes it possible to target only those who participate in mob programming.
+### Customizations
 
-this file name only `.git-co-authors.yaml`
+## Load Config
+
+You usually see the previous committers. If you want to always see a couple of person, provide a configuration file.
+It will only load the committers from the file.
+
+Create a file named `.git-co-authors.yaml`. You can use the snippet below as a template.
+
 ```yaml
 committers:
   - name: user
     email: user@example.com
-...
 ```
+
+## pre-commit
+
+[pre-commit](https://pre-commit.com) helps you integrate various Git hooks to your project with a simple file. You use
+co-author
+with pre-commit.
+
+Add the snippet below to your `.pre-commit-config.yaml`
+
+```yaml
+default_install_hook_types:
+  - prepare-commit-msg # it must exist
+
+repos:
+  - repo: https://github.com/erkanzileli/co-author.git
+    rev: v0.0.2 # use the latest version
+    hooks:
+      - id: co-author
+        stages:
+          - prepare-commit-msg
+```
+
+After you configured the `.pre-commit-config.yaml` file, run command below to install the hooks.
+
+```shell
+pre-commit install
+```
+
+Now you can start using co-author with pre-commit.
 
 ## Contributing
 
