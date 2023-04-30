@@ -88,9 +88,14 @@ up to you.
 co-author hook # This will print the hook template
 ```
 
-### Customizations
+## Customizations
 
-## Load Config
+You can customize it for your needs.
+
+- [Load Config](#load-config)
+- [pre-commit](#pre-commit)
+
+### Load Config
 
 You usually see the previous committers. If you want to always see a couple of person, provide a configuration file.
 It will only load the committers from the file.
@@ -103,7 +108,7 @@ committers:
     email: user@example.com
 ```
 
-## pre-commit
+### pre-commit
 
 [pre-commit](https://pre-commit.com) helps you integrate various Git hooks to your project with a simple file. You use
 co-author

@@ -1,6 +1,6 @@
 module github.com/erkanzileli/co-author
 
-go 1.17
+go 1.20
 
 require (
 	github.com/charmbracelet/bubbles v0.10.3
