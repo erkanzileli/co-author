@@ -42,7 +42,7 @@ func NewItemDelegate(keys *DelegateKeyMap) list.DefaultDelegate {
 
 			case key.Matches(msg, keys.complete):
 				selectedCommitters := getSelectedCommitters(m.Items())
-				if err := git.UpdateCommitMessageFile(git.PrepareCommitMessageForCommitters(selectedCommitters)); err != nil {
+				if err := git.SaveSelectedCommittersToMessage(selectedCommitters); err != nil {
 					log.Fatal(err)
 				}
 				return tea.Quit

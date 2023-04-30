@@ -15,11 +15,8 @@ func getSelectedCommitters(items []list.Item) (result []model.Committer) {
 }
 
 func ConvertCommittersToListItems(committers []model.Committer) (items []list.Item) {
-	for _, c := range committers {
-		items = append(items, &model.Committer{
-			Name:  c.Name,
-			Email: c.Email,
-		})
+	for i := 0; i < len(committers); i++ {
+		items = append(items, &committers[i])
 	}
 	return
 }

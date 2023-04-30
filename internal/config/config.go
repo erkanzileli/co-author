@@ -17,6 +17,8 @@ var (
 
 	// Version is the version of the application. It will be set by the build script.
 	Version string
+
+	ErrCommitMsgFileDoesNotSpecified = fmt.Errorf("commit msg file does not specified on args, please check your git hook")
 )
 
 type Config struct {
@@ -26,9 +28,35 @@ type Config struct {
 	// CommitMessageFilePath is the path of the file that will be used as the commit message.
 	// It will be provided by Git when it's called as a prepare-commit-msg hook.
 	CommitMessageFilePath string `yaml:"-"`
+
+	// CommitSource specifies the source of the commit message.
+	// It will be provided by Git when it's called as a prepare-commit-msg hook.
+	// It can be one of the following values:
+	// - "message": The commit message is provided by the user.
+	// - "template": The commit message is provided by Git when it's called as a prepare-commit-msg hook.
+	// - "merge": The commit message is provided by Git when it's called as a prepare-commit-msg hook.
+	// - "squash": The commit message is provided by Git when it's called as a prepare-commit-msg hook.
+	CommitSource string `yaml:"-"`
+
+	// CommitSHA1 is the SHA1 of the commit.
+	CommitSHA1 string `yaml:"-"`
 }
 
 func Init() error {
+	if len(os.Args) >= 3 {
+		AppConfig.CommitMessageFilePath = os.Args[2]
+	}
+	if len(os.Args) >= 4 {
+		AppConfig.CommitSource = os.Args[3]
+	}
+	if len(os.Args) >= 5 {
+		AppConfig.CommitSHA1 = os.Args[4]
+	}
+
+	if AppConfig.CommitMessageFilePath == "" {
+		return ErrCommitMsgFileDoesNotSpecified
+	}
+
 	if !fileExists(configFilePath) {
 		return nil
 	}
@@ -40,10 +68,6 @@ func Init() error {
 
 	if err = yaml.Unmarshal(fileByteContent, &AppConfig); err != nil {
 		return fmt.Errorf("failed to unmarshal config file %s: %w", configFilePath, err)
-	}
-
-	if len(os.Args) >= 3 {
-		AppConfig.CommitMessageFilePath = os.Args[2]
 	}
 
 	return nil

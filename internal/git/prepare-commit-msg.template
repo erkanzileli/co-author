@@ -11,4 +11,4 @@ else
   export GOBIN="$(go env GOBIN)"
 fi
 
-$GOBIN/$APP commit $COMMIT_MSG_FILE
+$GOBIN/$APP commit $COMMIT_MSG_FILE $COMMIT_SOURCE $SHA1
