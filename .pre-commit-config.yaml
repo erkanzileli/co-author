@@ -1,0 +1,10 @@
+default_install_hook_types:
+  - prepare-commit-msg
+
+repos:
+  - repo: https://github.com/erkanzileli/co-author.git
+    rev: v0.0.5
+    hooks:
+      - id: co-author
+        stages:
+          - prepare-commit-msg
