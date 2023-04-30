@@ -1,7 +1,9 @@
-package main
+package tui
 
 import (
 	"fmt"
+	"github.com/erkanzileli/co-author/internal/git"
+	"github.com/erkanzileli/co-author/internal/model"
 	"log"
 
 	"github.com/charmbracelet/bubbles/key"
@@ -14,11 +16,11 @@ const (
 	itemUnSelectMessageFormat = "Unselected %s"
 )
 
-func newItemDelegate(keys *delegateKeyMap) list.DefaultDelegate {
+func NewItemDelegate(keys *DelegateKeyMap) list.DefaultDelegate {
 	d := list.NewDefaultDelegate()
 
 	d.UpdateFunc = func(msg tea.Msg, m *list.Model) tea.Cmd {
-		item, ok := m.SelectedItem().(*committer)
+		item, ok := m.SelectedItem().(*model.Committer)
 		if !ok {
 			return nil
 		}
@@ -30,26 +32,26 @@ func newItemDelegate(keys *delegateKeyMap) list.DefaultDelegate {
 				item.ToggleSelect()
 
 				var message string
-				if item.selected {
+				if item.IsSelected() {
 					message = fmt.Sprintf(itemSelectMessageFormat, item.Name)
 				} else {
 					message = fmt.Sprintf(itemUnSelectMessageFormat, item.Name)
 				}
 
-				return m.NewStatusMessage(statusMessageStyle(message))
+				return m.NewStatusMessage(StatusMessageStyle(message))
 
 			case key.Matches(msg, keys.complete):
 				selectedCommitters := getSelectedCommitters(m.Items())
-				if err := writeToCommitMsgFile(prepareCommitMsg(selectedCommitters)); err != nil {
+				if err := git.UpdateCommitMessageFile(git.PrepareCommitMessageForCommitters(selectedCommitters)); err != nil {
 					log.Fatal(err)
 				}
 				return tea.Quit
 
 			case key.Matches(msg, keys.reset):
 				for _, i := range m.Items() {
-					i.(*committer).UnSelect()
+					i.(*model.Committer).UnSelect()
 				}
-				return m.NewStatusMessage(statusMessageStyle("Cleaned all selections"))
+				return m.NewStatusMessage(StatusMessageStyle("Cleaned all selections"))
 			}
 		}
 
@@ -67,45 +69,4 @@ func newItemDelegate(keys *delegateKeyMap) list.DefaultDelegate {
 	}
 
 	return d
-}
-
-type delegateKeyMap struct {
-	choose   key.Binding
-	complete key.Binding
-	reset    key.Binding
-}
-
-func (d *delegateKeyMap) ShortHelp() []key.Binding {
-	return []key.Binding{
-		d.choose,
-		d.complete,
-		d.reset,
-	}
-}
-
-func (d *delegateKeyMap) FullHelp() [][]key.Binding {
-	return [][]key.Binding{
-		{
-			d.choose,
-			d.complete,
-			d.reset,
-		},
-	}
-}
-
-func newDelegateKeyMap() *delegateKeyMap {
-	return &delegateKeyMap{
-		choose: key.NewBinding(
-			key.WithKeys(" "),
-			key.WithHelp("space", "choose"),
-		),
-		complete: key.NewBinding(
-			key.WithKeys("enter"),
-			key.WithHelp("enter", "complete"),
-		),
-		reset: key.NewBinding(
-			key.WithKeys("r"),
-			key.WithHelp("r", "reset"),
-		),
-	}
 }

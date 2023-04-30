@@ -1,21 +1,23 @@
-package main
+package file
 
 import (
-	"io/ioutil"
+	"github.com/erkanzileli/co-author/internal/model"
 	"os"
 
 	"github.com/pkg/errors"
 	"gopkg.in/yaml.v2"
 )
 
-var CONFIG_FILES = ".git-co-authors.yaml"
+const (
+	coAuthorsFilePath = ".git-co-authors.yaml"
+)
 
 type config struct {
-	Committers []committer `yaml:"committers,omitempty"`
+	Committers []model.Committer `yaml:"committers,omitempty"`
 }
 
 func fileOpen(filename string) ([]byte, error) {
-	buf, err := ioutil.ReadFile(filename)
+	buf, err := os.ReadFile(filename)
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}

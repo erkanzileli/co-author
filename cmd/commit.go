@@ -1,14 +1,15 @@
-package main
+package cmd
 
 import (
 	"fmt"
+	"github.com/erkanzileli/co-author/internal/git"
+	"github.com/erkanzileli/co-author/internal/tui"
 	"log"
 	"os"
 
 	"github.com/charmbracelet/bubbles/key"
 	"github.com/charmbracelet/bubbles/list"
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/charmbracelet/lipgloss"
 	"github.com/spf13/cobra"
 )
 
@@ -24,19 +25,6 @@ var (
 			}
 		},
 	}
-)
-
-var (
-	appStyle = lipgloss.NewStyle().Padding(1, 2)
-
-	titleStyle = lipgloss.NewStyle().
-			Foreground(lipgloss.Color("#FFFDF5")).
-			Background(lipgloss.Color("#25A065")).
-			Padding(0, 1)
-
-	statusMessageStyle = lipgloss.NewStyle().
-				Foreground(lipgloss.AdaptiveColor{Light: "#04B575", Dark: "#04B575"}).
-				Render
 )
 
 type listKeyMap struct {
@@ -60,26 +48,26 @@ func newListKeyMap() *listKeyMap {
 type model struct {
 	list         list.Model
 	keys         *listKeyMap
-	delegateKeys *delegateKeyMap
+	delegateKeys *tui.DelegateKeyMap
 }
 
 func newModel() *model {
 	var (
-		delegateKeys = newDelegateKeyMap()
+		delegateKeys = tui.NewDelegateKeyMap()
 		listKeys     = newListKeyMap()
 	)
 
 	// Make initial list of items
-	items, err := findCommitters()
+	committers, err := git.FindCommitters()
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	// Setup list
-	delegate := newItemDelegate(delegateKeys)
-	committerList := list.New(items, delegate, 0, 0)
+	delegate := tui.NewItemDelegate(delegateKeys)
+	committerList := list.New(tui.ConvertCommittersToListItems(committers), delegate, 0, 0)
 	committerList.Title = "Committers"
-	committerList.Styles.Title = titleStyle
+	committerList.Styles.Title = tui.TitleStyle
 	committerList.AdditionalFullHelpKeys = func() []key.Binding {
 		return []key.Binding{
 			listKeys.toggleSpinner,
@@ -102,7 +90,7 @@ func (m *model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
-		topGap, rightGap, bottomGap, leftGap := appStyle.GetPadding()
+		topGap, rightGap, bottomGap, leftGap := tui.AppStyle.GetPadding()
 		m.list.SetSize(msg.Width-leftGap-rightGap, msg.Height-topGap-bottomGap)
 
 	case tea.KeyMsg:
@@ -131,5 +119,5 @@ func (m *model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m *model) View() string {
-	return appStyle.Render(m.list.View())
+	return tui.AppStyle.Render(m.list.View())
 }
