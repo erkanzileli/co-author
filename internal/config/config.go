@@ -3,13 +3,12 @@ package config
 import (
 	"fmt"
 	"github.com/erkanzileli/co-author/internal/model"
-	"os"
-
 	"gopkg.in/yaml.v2"
+	"os"
 )
 
 const (
-	configFilePath = ".co-author.yaml"
+	configFilePath = ".git-co-authors.yaml"
 )
 
 var (
@@ -53,21 +52,27 @@ func Init() error {
 		AppConfig.CommitSHA1 = os.Args[4]
 	}
 
-	if AppConfig.CommitMessageFilePath == "" {
-		return ErrCommitMsgFileDoesNotSpecified
+	var commandName string
+	if len(os.Args) >= 2 {
+		commandName = os.Args[1]
 	}
 
-	if !fileExists(configFilePath) {
-		return nil
-	}
+	if commandName == "commit" {
+		if AppConfig.CommitMessageFilePath == "" {
+			return ErrCommitMsgFileDoesNotSpecified
+		}
+		if !fileExists(configFilePath) {
+			return nil
+		}
 
-	fileByteContent, err := os.ReadFile(configFilePath)
-	if err != nil {
-		return fmt.Errorf("failed to read config file %s: %w", configFilePath, err)
-	}
+		fileByteContent, err := os.ReadFile(configFilePath)
+		if err != nil {
+			return fmt.Errorf("failed to read config file %s: %w", configFilePath, err)
+		}
 
-	if err = yaml.Unmarshal(fileByteContent, &AppConfig); err != nil {
-		return fmt.Errorf("failed to unmarshal config file %s: %w", configFilePath, err)
+		if err = yaml.Unmarshal(fileByteContent, &AppConfig); err != nil {
+			return fmt.Errorf("failed to unmarshal config file %s: %w", configFilePath, err)
+		}
 	}
 
 	return nil
